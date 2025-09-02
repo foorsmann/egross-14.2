@@ -54,10 +54,14 @@
                 <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
                 <div style="color: var(--color-secondary);">{{ bs.content }}</div>
               </div>
-            {% else %}
+            {% when 'socialmedia' %}
               <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block mb-7">
                 <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
                 <div class="-mx-4">{% render 'social-media-links' %}</div>
+              </div>
+            {% when 'custom_liquid' %}
+              <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block mb-7">
+                {{ bs.code }}
               </div>
           {% endcase %}
         {% endfor %}
@@ -157,6 +161,17 @@
           "id": "title",
           "label": "Title",
           "default": "Social Media"
+        }
+      ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom liquid",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "code",
+          "label": "Code"
         }
       ]
     }
