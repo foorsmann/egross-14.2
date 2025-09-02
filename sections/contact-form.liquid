@@ -54,7 +54,28 @@
                 <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
                 <div style="color: var(--color-secondary);">{{ bs.content }}</div>
               </div>
-            {% else %}
+            {% when 'custom_liquid' %}
+              <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block mb-7" {{ block.shopify_attributes }}>
+                {{ block.settings.liquid }}
+              </div>
+            {% when 'map_auto' %}
+              {% assign encoded_address = block.settings.map_address | strip | escape | url_encode %}
+              <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block mb-7" {{ block.shopify_attributes }}>
+                <iframe
+                  src="https://www.google.com/maps?q={{ encoded_address }}&output=embed"
+                  width="100%"
+                  height="{{ block.settings.map_height }}"
+                  style="border:0; border-radius: {{ block.settings.map_border_radius }}px;"
+                  loading="lazy"
+                  referrerpolicy="no-referrer-when-downgrade"
+                  allowfullscreen></iframe>
+                {% if block.settings.show_open_in_maps %}
+                  <p class="mt-3">
+                    <a href="https://www.google.com/maps/search/?api=1&query={{ encoded_address }}" target="_blank" rel="noopener nofollow">Deschide în Google Maps</a>
+                  </p>
+                {% endif %}
+              </div>
+            {% when 'socialmedia' %}
               <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block mb-7">
                 <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
                 <div class="-mx-4">{% render 'social-media-links' %}</div>
@@ -159,7 +180,28 @@
           "default": "Social Media"
         }
       ]
+    },
+    {
+      "type": "custom_liquid",
+      "name": "Custom liquid",
+      "settings": [
+        { "type": "liquid", "id": "liquid", "label": "Cod Liquid personalizat" }
+      ]
+    },
+    {
+      "type": "map_auto",
+      "name": "Map (auto)",
+      "settings": [
+        { "type": "text", "id": "map_address", "label": "Adresă pentru hartă", "default": "" },
+        { "type": "range", "id": "map_height", "label": "Înălțime hartă (px)", "min": 200, "max": 600, "step": 10, "default": 300 },
+        { "type": "range", "id": "map_zoom", "label": "Zoom (informativ)", "min": 10, "max": 18, "step": 1, "default": 16 },
+        { "type": "range", "id": "map_border_radius", "label": "Colțuri rotunjite (px)", "min": 0, "max": 24, "step": 1, "default": 8 },
+        { "type": "checkbox", "id": "show_open_in_maps", "label": "Afișează link ‘Deschide în Google Maps’", "default": true }
+      ]
     }
-  ]
+  ],
+  "enabled_on": {
+    "templates": ["page", "page.contact"]
+  }
 }
 {% endschema %}
