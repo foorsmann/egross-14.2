@@ -54,7 +54,30 @@
                 <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
                 <div style="color: var(--color-secondary);">{{ bs.content }}</div>
               </div>
-            {% else %}
+            {% when 'custom_liquid_right' %}
+              <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block eg-custom-right mb-7">
+                {{ block.settings.code }}
+              </div>
+            {% when 'eg_map_right' %}
+              <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block eg-custom-right mb-7">
+                {% if block.settings.title != blank %}
+                  <h3 class="font-medium mb-5 text-lg">{{ block.settings.title }}</h3>
+                {% endif %}
+                <div class="eg-map-embed">
+                  <iframe
+                    src="https://www.google.com/maps?q={{ block.settings.lat | escape }},{{ block.settings.lng | escape }}&z={{ block.settings.zoom | default: 15 }}&output=embed"
+                    loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                  <a class="eg-map-overlay"
+                     href="https://www.google.com/maps?q={{ block.settings.lat | escape }},{{ block.settings.lng | escape }}"
+                     target="_blank" rel="noopener" aria-label="Deschide pe Google Maps"></a>
+                </div>
+                <a class="eg-map-link"
+                   href="https://www.google.com/maps?q={{ block.settings.lat | escape }},{{ block.settings.lng | escape }}"
+                   target="_blank" rel="noopener">
+                  {{ block.settings.link_text }}
+                </a>
+              </div>
+            {% when 'socialmedia' %}
               <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block mb-7">
                 <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
                 <div class="-mx-4">{% render 'social-media-links' %}</div>
@@ -159,6 +182,62 @@
           "default": "Social Media"
         }
       ]
+    },
+    {
+      "type": "custom_liquid_right",
+      "name": "Custom code (right column)",
+      "settings": [
+        {
+          "type": "liquid",
+          "id": "code",
+          "label": "Code"
+        }
+      ]
+    },
+    {
+      "type": "eg_map_right",
+      "name": "Map (right column)",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Titlu",
+          "default": "Hartă"
+        },
+        {
+          "type": "text",
+          "id": "lat",
+          "label": "Latitudine",
+          "default": "44.4268"
+        },
+        {
+          "type": "text",
+          "id": "lng",
+          "label": "Longitudine",
+          "default": "26.1025"
+        },
+        {
+          "type": "range",
+          "id": "zoom",
+          "label": "Zoom",
+          "min": 10,
+          "max": 18,
+          "step": 1,
+          "default": 15
+        },
+        {
+          "type": "text",
+          "id": "link_text",
+          "label": "Text link",
+          "default": "Vezi locația pe Google Maps"
+        }
+      ]
+    }
+  ],
+  "templates": ["page"],
+  "presets": [
+    {
+      "name": "Contact form"
     }
   ]
 }

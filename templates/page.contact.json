@@ -10,18 +10,6 @@
 {
   "sections": {
     "main": {
-      "type": "page-contact",
-      "settings": {
-        "container": "container"
-      }
-    },
-    "7b5d32cd-b203-40e5-b30a-64a5066dd4f8": {
-      "type": "custom-code",
-      "settings": {
-        "custom_css": "<div style=\"width: 100%;\" id=\"return-request-holder\"></div>\n<script>// <![CDATA[\nvar iframe = document.createElement(\"iframe\");\n    iframe.setAttribute(\"src\",\"https://return.xconnector.app?shop=\" + Shopify.shop +\"&token=\" + xConnector.token );\n    iframe.setAttribute(\"scrolling\", \"no\");\n    iframe.setAttribute(\"id\", \"return-request-holder-iframe\");\n    iframe.style.border = \"none\";\n    iframe.style.width = \"100%\";\n    document.getElementById(\"return-request-holder\").appendChild( iframe );\n    window.addEventListener(\"message\", (event) => {\n        let data = JSON.parse(event.data);\n        if (data.type === 'resize') {\n            document.querySelector('#return-request-holder-iframe').height = data.data.height;\n        }\n    });\n// ]]></script>"
-      }
-    },
-    "contact-form": {
       "type": "contact-form",
       "blocks": {
         "text-block-1": {
@@ -69,6 +57,12 @@
         "show_signup_email": false
       }
     },
+    "7b5d32cd-b203-40e5-b30a-64a5066dd4f8": {
+      "type": "custom-code",
+      "settings": {
+        "custom_css": "<div style=\"width: 100%;\" id=\"return-request-holder\"></div>\n<script>// <![CDATA[\nvar iframe = document.createElement(\"iframe\");\n    iframe.setAttribute(\"src\",\"https://return.xconnector.app?shop=\" + Shopify.shop +\"&token=\" + xConnector.token );\n    iframe.setAttribute(\"scrolling\", \"no\");\n    iframe.setAttribute(\"id\", \"return-request-holder-iframe\");\n    iframe.style.border = \"none\";\n    iframe.style.width = \"100%\";\n    document.getElementById(\"return-request-holder\").appendChild( iframe );\n    window.addEventListener(\"message\", (event) => {\n        let data = JSON.parse(event.data);\n        if (data.type === 'resize') {\n            document.querySelector('#return-request-holder-iframe').height = data.data.height;\n        }\n    });\n// ]]></script>"
+      }
+    },
     "maps": {
       "type": "maps",
       "disabled": true,
@@ -85,7 +79,6 @@
   "order": [
     "main",
     "7b5d32cd-b203-40e5-b30a-64a5066dd4f8",
-    "contact-form",
     "maps"
   ]
 }
