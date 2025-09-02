@@ -9,19 +9,21 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "page-contact",
-      "settings": {
-        "container": "container"
-      }
-    },
     "7b5d32cd-b203-40e5-b30a-64a5066dd4f8": {
       "type": "custom-code",
       "settings": {
         "custom_css": "<div style=\"width: 100%;\" id=\"return-request-holder\"></div>\n<script>// <![CDATA[\nvar iframe = document.createElement(\"iframe\");\n    iframe.setAttribute(\"src\",\"https://return.xconnector.app?shop=\" + Shopify.shop +\"&token=\" + xConnector.token );\n    iframe.setAttribute(\"scrolling\", \"no\");\n    iframe.setAttribute(\"id\", \"return-request-holder-iframe\");\n    iframe.style.border = \"none\";\n    iframe.style.width = \"100%\";\n    document.getElementById(\"return-request-holder\").appendChild( iframe );\n    window.addEventListener(\"message\", (event) => {\n        let data = JSON.parse(event.data);\n        if (data.type === 'resize') {\n            document.querySelector('#return-request-holder-iframe').height = data.data.height;\n        }\n    });\n// ]]></script>"
       }
     },
-    "contact-form": {
+    "custom_liquid_q7RLBR": {
+      "type": "custom-liquid",
+      "name": "Custom liquid",
+      "settings": {
+        "custom_liquid": "<div class=\"eg-contact-map\">\n  <div class=\"eg-map-embed\">\n    <iframe\n      src=\"https://www.google.com/maps?q=44.4268,26.1025&z=15&output=embed\"\n      style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\">\n    </iframe>\n    <a class=\"eg-map-overlay\" href=\"https://www.google.com/maps?q=44.4268,26.1025\" target=\"_blank\" rel=\"noopener\" aria-label=\"Deschide pe Google Maps\"></a>\n  </div>\n  <a class=\"eg-map-link\" href=\"https://www.google.com/maps?q=44.4268,26.1025\" target=\"_blank\" rel=\"noopener\">Vezi locația pe Google Maps</a>\n</div>\n\n<style>\n  .eg-contact-map { display:block; }\n  .eg-map-embed { position:relative; width:100%; aspect-ratio:16/9; }\n  .eg-map-embed iframe { position:absolute; inset:0; width:100%; height:100%; }\n  /* overlay face tot iframe-ul „click to open in new tab” */\n  .eg-map-overlay { position:absolute; inset:0; display:block; }\n  .eg-map-link { display:inline-block; margin-top:8px; text-decoration:underline; }\n</style>",
+        "custom_class": ""
+      }
+    },
+    "main": {
       "type": "contact-form",
       "blocks": {
         "text-block-1": {
@@ -68,20 +70,12 @@
         "show_phone": true,
         "show_signup_email": false
       }
-    },
-    "custom_liquid_q7RLBR": {
-      "type": "custom-liquid",
-      "name": "Custom liquid",
-      "settings": {
-        "custom_liquid": "<div class=\"eg-contact-map\">\n  <div class=\"eg-map-embed\">\n    <iframe\n      src=\"https://www.google.com/maps?q=44.4268,26.1025&z=15&output=embed\"\n      style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\">\n    </iframe>\n    <a class=\"eg-map-overlay\" href=\"https://www.google.com/maps?q=44.4268,26.1025\" target=\"_blank\" rel=\"noopener\" aria-label=\"Deschide pe Google Maps\"></a>\n  </div>\n  <a class=\"eg-map-link\" href=\"https://www.google.com/maps?q=44.4268,26.1025\" target=\"_blank\" rel=\"noopener\">Vezi locația pe Google Maps</a>\n</div>\n\n<style>\n  .eg-contact-map { display:block; }\n  .eg-map-embed { position:relative; width:100%; aspect-ratio:16/9; }\n  .eg-map-embed iframe { position:absolute; inset:0; width:100%; height:100%; }\n  /* overlay face tot iframe-ul „click to open in new tab” */\n  .eg-map-overlay { position:absolute; inset:0; display:block; }\n  .eg-map-link { display:inline-block; margin-top:8px; text-decoration:underline; }\n</style>",
-        "custom_class": ""
-      }
     }
   },
   "order": [
     "main",
     "7b5d32cd-b203-40e5-b30a-64a5066dd4f8",
-    "contact-form",
     "custom_liquid_q7RLBR"
-  ]
+  ],
+  "name": "Contact"
 }
