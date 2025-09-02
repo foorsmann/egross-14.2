@@ -54,10 +54,50 @@
                 <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
                 <div style="color: var(--color-secondary);">{{ bs.content }}</div>
               </div>
-            {% else %}
+            {% when 'socialmedia' %}
               <div class="md:w-3/12 md:px-4 xl:w-full xl:px-0 sf__text-block mb-7">
                 <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
                 <div class="-mx-4">{% render 'social-media-links' %}</div>
+              </div>
+            {% when 'custom_liquid_right' %}
+              <div class="sf__text-block mb-7 eg-custom-right">
+                {% if bs.title != blank %}
+                  <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
+                {% endif %}
+                {{ bs.code }}
+              </div>
+            {% when 'eg_map_right' %}
+              {% assign lat = bs.lat | plus: 0 %}
+              {% assign lng = bs.lng | plus: 0 %}
+              {% assign zoom = bs.zoom | default: 15 | plus: 0 %}
+
+              {%- comment -%}
+                bbox simplu (±0.01°) – suficient pentru OSM embed; nu folosim API sau JS.
+              {%- endcomment -%}
+              {% assign delta = 0.01 %}
+              {% assign lat_min = lat | minus: delta %}
+              {% assign lat_max = lat | plus: delta %}
+              {% assign lng_min = lng | minus: delta %}
+              {% assign lng_max = lng | plus: delta %}
+
+              <div class="sf__text-block mb-7 eg-custom-right">
+                {% if bs.title != blank %}
+                  <h3 class="font-medium mb-5 text-lg">{{ bs.title }}</h3>
+                {% endif %}
+                <div class="eg-map-embed relative">
+                  <iframe
+                    src="https://www.openstreetmap.org/export/embed.html?bbox={{ lng_min }}%2C{{ lat_min }}%2C{{ lng_max }}%2C{{ lat_max }}&layer=mapnik&marker={{ lat }}%2C{{ lng }}"
+                    loading="lazy">
+                  </iframe>
+                  <a class="eg-map-overlay"
+                     href="https://www.openstreetmap.org/?mlat={{ lat }}&mlon={{ lng }}#map={{ zoom }}/{{ lat }}/{{ lng }}"
+                     target="_blank" rel="noopener" aria-label="Deschide pe OpenStreetMap"></a>
+                </div>
+                {% if bs.link_label != blank %}
+                  <a class="eg-map-link" href="https://www.openstreetmap.org/?mlat={{ lat }}&mlon={{ lng }}#map={{ zoom }}/{{ lat }}/{{ lng }}" target="_blank" rel="noopener">
+                    {{ bs.link_label }}
+                  </a>
+                {% endif %}
               </div>
           {% endcase %}
         {% endfor %}
@@ -158,6 +198,26 @@
           "label": "Title",
           "default": "Social Media"
         }
+      ]
+    },
+    {
+      "type": "custom_liquid_right",
+      "name": "Custom code (right column)",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titlu", "default": "Hartă" },
+        { "type": "liquid", "id": "code", "label": "Code" }
+      ]
+    },
+    {
+      "type": "eg_map_right",
+      "name": "Map (right column, OSM)",
+      "limit": 1,
+      "settings": [
+        { "type": "text", "id": "title", "label": "Titlu", "default": "Hartă" },
+        { "type": "text", "id": "lat", "label": "Latitudine", "default": "44.4268" },
+        { "type": "text", "id": "lng", "label": "Longitudine", "default": "26.1025" },
+        { "type": "range", "id": "zoom", "label": "Zoom", "min": 8, "max": 18, "step": 1, "default": 15 },
+        { "type": "text", "id": "link_label", "label": "Text link sub hartă", "default": "Vezi locația pe hartă" }
       ]
     }
   ]
