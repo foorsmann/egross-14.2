@@ -247,3 +247,19 @@
   }
 }
 
+@media (min-width: 768px) and (max-width: 1023px) {
+  #shopify-section-template--26262035235155__contact-form .md\:flex {
+    display: block;
+  }
+  #shopify-section-template--26262035235155__contact-form .md\:-mx-4 {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  #shopify-section-template--26262035235155__contact-form .md\:w-3\/12 {
+    width: 100%;
+  }
+  #shopify-section-template--26262035235155__contact-form .md\:px-4 {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
