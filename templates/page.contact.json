@@ -69,16 +69,12 @@
         "show_signup_email": false
       }
     },
-    "maps": {
-      "type": "maps",
-      "disabled": true,
+    "custom_liquid_q7RLBR": {
+      "type": "custom-liquid",
+      "name": "Custom liquid",
       "settings": {
-        "container": "container",
-        "map_height": "medium",
-        "textx": "44.4268",
-        "texty": "26.1025",
-        "zoom": "11",
-        "text2": "Bucuresti"
+        "custom_liquid": "<div class=\"eg-contact-map\">\n  <div class=\"eg-map-embed\">\n    <iframe\n      src=\"https://www.google.com/maps?q=44.4268,26.1025&z=15&output=embed\"\n      style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\">\n    </iframe>\n    <a class=\"eg-map-overlay\" href=\"https://www.google.com/maps?q=44.4268,26.1025\" target=\"_blank\" rel=\"noopener\" aria-label=\"Deschide pe Google Maps\"></a>\n  </div>\n  <a class=\"eg-map-link\" href=\"https://www.google.com/maps?q=44.4268,26.1025\" target=\"_blank\" rel=\"noopener\">Vezi locația pe Google Maps</a>\n</div>\n\n<style>\n  .eg-contact-map { display:block; }\n  .eg-map-embed { position:relative; width:100%; aspect-ratio:16/9; }\n  .eg-map-embed iframe { position:absolute; inset:0; width:100%; height:100%; }\n  /* overlay face tot iframe-ul „click to open in new tab” */\n  .eg-map-overlay { position:absolute; inset:0; display:block; }\n  .eg-map-link { display:inline-block; margin-top:8px; text-decoration:underline; }\n</style>",
+        "custom_class": ""
       }
     }
   },
@@ -86,6 +82,6 @@
     "main",
     "7b5d32cd-b203-40e5-b30a-64a5066dd4f8",
     "contact-form",
-    "maps"
+    "custom_liquid_q7RLBR"
   ]
 }
