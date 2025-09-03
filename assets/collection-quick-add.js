@@ -681,9 +681,14 @@ async function handleDelegatedAddToCart(e){
   function updateQtyGroupLayout(){
     document.querySelectorAll('.collection-qty-group').forEach(function(group){
       var input = group.querySelector('input[data-collection-quantity-input]');
+      if(!input) return;
       var btn = group.querySelector('.collection-double-qty-btn');
-      if(!input || !btn) return;
-      group.classList.toggle('is-wrapped', btn.offsetTop > input.offsetTop);
+      var wrapped = btn ? (btn.offsetTop > input.offsetTop) : false;
+      group.classList.toggle('is-wrapped', wrapped);
+      var actions = group.closest('.collection-form__actions');
+      if(actions) {
+        actions.classList.toggle('inline-layout', !wrapped);
+      }
     });
   }
   var qtyLayoutListenerBound = false;
