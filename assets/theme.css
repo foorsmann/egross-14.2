@@ -53,3 +53,27 @@
     width:auto;
   }
 }
+/* Contact info grid responsive overrides */
+@media (min-width:768px) and (max-width:1023px){
+  section[data-section-type="contact-page"] .contact-info-grid{
+    flex-direction:column;
+    flex-wrap:nowrap;
+    row-gap:1.25rem;
+    margin-left:0;
+    margin-right:0;
+    overflow:visible;
+    margin-bottom:var(--space,1.5rem);
+  }
+  section[data-section-type="contact-page"] .contact-info-grid > *{
+    width:100%;
+    margin-left:0;
+    margin-right:0;
+    padding-left:0;
+    padding-right:0;
+  }
+}
+section[data-section-type="contact-page"] .contact-info-grid iframe{
+  max-width:100% !important;
+  height:auto !important;
+  display:block;
+}

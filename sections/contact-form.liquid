@@ -45,7 +45,7 @@
         {%- endform -%}
       </div>
       {% if section.blocks.size > 0 %}
-      <div class="w-full md:flex md:-mx-4 xl:mx-0 xl:w-4/12 xl:block xl:mb-0 mb-7">
+      <div class="contact-info-grid w-full md:flex md:-mx-4 xl:mx-0 xl:w-4/12 xl:block xl:mb-0 mb-7">
         {% for block in section.blocks %}
           {% assign bs = block.settings %}
           {% case block.type %}
