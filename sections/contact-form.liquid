@@ -67,9 +67,33 @@
         {% endfor %}
       </div>
       {% endif %}
-    </div>
+  </div>
   </div>
 </section>
+<style scoped>
+/* Override doar pentru secțiunea Contact */
+#shopify-section-template--26262035235155__contact-form {
+}
+
+/* 768–1023px → forțăm layout ca la <768px */
+@media (min-width:768px) and (max-width:1023px) {
+  /* Coloana dreaptă (sidebar) nu mai e flex */
+  #shopify-section-template--26262035235155__contact-form .md\:flex {
+    display: block;
+  }
+
+  /* Blocurile din sidebar pe verticală, full-width */
+  #shopify-section-template--26262035235155__contact-form .md\:w-3\/12 {
+    width: 100%;
+    max-width: 100%;
+    flex: none;
+  }
+  #shopify-section-template--26262035235155__contact-form .md\:px-4 {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+</style>
 {% schema %}
 {
   "name": "Contact form",
