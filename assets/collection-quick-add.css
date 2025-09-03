@@ -83,3 +83,35 @@ input.collection-qty-element:focus {
   font-weight: 600;
 }
 
+/* == Layout container acțiuni pe colecții == */
+[data-collection-cart-actions] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: .5rem;
+}
+
+/* Grupul qty = fluid; permite ATC să se alinieze la dreapta */
+[data-collection-cart-actions] .collection-qty-wrapper {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Varianta NORMALĂ (un singur rând): ATC auto-width, lipit dreapta */
+[data-collection-cart-actions]:not(.is-stacked) .collection-add-to-cart {
+  width: auto !important;       /* anulează w-full din markup */
+  margin-left: auto;            /* împinge la dreapta */
+  margin-top: 0 !important;     /* anulează mt-4 doar în modul inline */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: max(128px, fit-content);
+}
+
+/* Varianta WRAP (două rânduri): ATC full width sub grup */
+[data-collection-cart-actions].is-stacked .collection-add-to-cart {
+  width: 100% !important;
+  margin-left: 0;
+  margin-top: .75rem !important; /* o treaptă de spațiu când e pe rând separat */
+}
+
