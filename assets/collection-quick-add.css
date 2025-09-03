@@ -97,6 +97,7 @@ input.collection-qty-element:focus {
   width: auto;
   margin-top: 0;
   margin-left: auto;
+  flex-grow: 0;
 }
 
 /* fallback discret pentru low-stock în slidere */
