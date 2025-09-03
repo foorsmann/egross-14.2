@@ -72,8 +72,24 @@
     padding-right:0;
   }
 }
-section[data-section-type="contact-page"] .contact-info-grid iframe{
-  max-width:100% !important;
-  height:auto !important;
-  display:block;
+/* CONTACT — Map container keeps aspect; iframe fills it */
+section[data-section-type="contact-page"] .eg-map-embed{
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+}
+section[data-section-type="contact-page"] .eg-map-embed > iframe{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+section[data-section-type="contact-page"] .eg-map-overlay{
+  position: absolute;
+  inset: 0;
+  display: block;
+  background: transparent;
 }
