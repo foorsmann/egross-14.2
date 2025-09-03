@@ -77,6 +77,23 @@ input.collection-qty-element:focus {
   height: 46px;
 }
 
+/* control layout of ATC vs qty group */
+.collection-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.collection-form__actions:not(.is-qty-wrapped) .collection-add-to-cart {
+  width: auto;
+  margin-top: 0;
+  margin-left: auto;
+}
+
+.collection-form__actions.is-qty-wrapped .collection-add-to-cart {
+  width: 100%;
+  margin-left: 0;
+}
+
 /* fallback discret pentru low-stock în slidere */
 [data-section-type] input.collection-qty-element.is-low-stock {
   color: #e3342f !important;
