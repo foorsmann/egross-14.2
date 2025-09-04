@@ -709,6 +709,11 @@ async function handleDelegatedAddToCart(e){
       var btn = group.querySelector('.collection-double-qty-btn');
       if(!input || !btn) return;
       group.classList.toggle('is-wrapped', btn.offsetTop > input.offsetTop);
+      var actions = group.closest('.collection-form__actions');
+      var atc = actions ? actions.querySelector('.collection-add-to-cart') : null;
+      if(actions && atc){
+        actions.classList.toggle('is-qty-wrapped', atc.offsetTop > group.offsetTop);
+      }
     });
   }
   var qtyLayoutListenerBound = false;
@@ -758,6 +763,8 @@ async function handleDelegatedAddToCart(e){
   window.addEventListener('shopify:section:load', initAll);
   window.addEventListener('shopify:cart:updated', initAll);
   window.addEventListener('shopify:product:updated', initAll);
+  window.addEventListener('cart:updated', initAll);
+  window.addEventListener('product:updated', initAll);
   class CollectionProductForm extends HTMLElement{
     constructor(){
       super();
