@@ -483,8 +483,12 @@ function qgSyncSliderQtyUI(qtyEl, sendQty) {
     }
   }
 
-  function setupCollectionDoubleQtyButtons(){
-    document.querySelectorAll('.collection-double-qty-btn').forEach(setupCollectionDoubleQtyButton);
+  function setupCollectionDoubleQtyButtons(root){
+    var scope = root || document;
+    if(scope.matches && scope.matches('.collection-double-qty-btn')){
+      setupCollectionDoubleQtyButton(scope);
+    }
+    scope.querySelectorAll && scope.querySelectorAll('.collection-double-qty-btn').forEach(setupCollectionDoubleQtyButton);
   }
 
   function updateCollectionDoubleQtyState(input){
@@ -718,26 +722,42 @@ async function handleDelegatedAddToCart(e){
     });
   }
   var qtyLayoutListenerBound = false;
+  var qtyResizeObserver = window.ResizeObserver ? new ResizeObserver(updateQtyGroupLayout) : null;
   function watchQtyGroupLayout(){
     updateQtyGroupLayout();
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
     window.addEventListener('resize', updateQtyGroupLayout);
-    var container = document.querySelector('.sf-collection-list, .collection-listing');
+    var container = document.querySelector('[data-product-container]');
+    if(container && qtyResizeObserver){
+      container.querySelectorAll('.collection-qty-group').forEach(function(group){
+        qtyResizeObserver.observe(group);
+      });
+    }
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
         updateQtyGroupLayout();
-        setupCollectionDoubleQtyButtons();
         mutations.forEach(function(m){
           m.addedNodes.forEach(function(node){
             if(!(node instanceof HTMLElement)) return;
             var root = node;
+            setupCollectionDoubleQtyButtons(root);
+            var inputs = [];
             if(root.matches && root.matches('input.collection-qty-element[data-collection-quantity-input]')){
-              if(qgIsSliderInput(root)) qgEnforceSliderInput(root);
+              inputs.push(root);
             }
             root.querySelectorAll && root.querySelectorAll('input.collection-qty-element[data-collection-quantity-input]').forEach(function(inp){
+              inputs.push(inp);
+            });
+            inputs.forEach(function(inp){
               if(qgIsSliderInput(inp)) qgEnforceSliderInput(inp);
             });
+            if(qtyResizeObserver){
+              var groups = [];
+              if(root.matches && root.matches('.collection-qty-group')) groups.push(root);
+              root.querySelectorAll && root.querySelectorAll('.collection-qty-group').forEach(function(g){ groups.push(g); });
+              groups.forEach(function(g){ qtyResizeObserver.observe(g); });
+            }
           });
         });
       });
