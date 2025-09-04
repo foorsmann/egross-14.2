@@ -85,6 +85,7 @@ input.collection-qty-element:focus {
 
 /* compact Add to cart layout when quantity controls stay on one line */
 .collection-form__actions.add-to-cart--compact .collection-add-to-cart {
+  display: block;
   width: auto;
   margin-left: auto;
   flex-grow: 0;
