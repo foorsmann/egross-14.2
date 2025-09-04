@@ -703,31 +703,44 @@ async function handleDelegatedAddToCart(e){
     var btn = e.target.closest('.collection-double-qty-btn');
     if(btn) btn.classList.remove('focus');
   }
-  function updateQtyGroupLayout(){
-    document.querySelectorAll('.collection-qty-group').forEach(function(group){
-      var input = group.querySelector('input[data-collection-quantity-input]');
-      var btn = group.querySelector('.collection-double-qty-btn');
-      var actions = group.closest('.collection-form__actions');
+  function applyCompactState(root){
+    if(!root) root = document;
+    var targets;
+    if(root.matches && root.matches('.collection-form__actions')){
+      targets = [root];
+    }else if(root.querySelectorAll){
+      targets = root.querySelectorAll('.collection-form__actions');
+    }else{
+      targets = [];
+    }
+    targets.forEach(function(actions){
+      var group = actions.querySelector('.collection-qty-group');
+      var input = group && group.querySelector('input[data-collection-quantity-input]');
+      var btn = group && group.querySelector('.collection-double-qty-btn');
       if(!input || !btn){
-        if(actions) actions.classList.remove('add-to-cart--compact');
+        actions.classList.remove('add-to-cart--compact');
+        actions.classList.add('compact');
         return;
       }
       var wrapped = btn.offsetTop > input.offsetTop;
-      group.classList.toggle('is-wrapped', wrapped);
-      if(actions) actions.classList.toggle('add-to-cart--compact', !wrapped);
+      if(group) group.classList.toggle('is-wrapped', wrapped);
+      actions.classList.toggle('add-to-cart--compact', !wrapped);
+      actions.classList.add('compact');
     });
+  }
+
+  function updateQtyGroupLayout(){
+    applyCompactState(document);
   }
   var qtyLayoutListenerBound = false;
   function watchQtyGroupLayout(){
-    updateQtyGroupLayout();
+    applyCompactState(document);
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
-    window.addEventListener('resize', updateQtyGroupLayout);
-    var container = document.querySelector('.sf-collection-list, .collection-listing');
+    window.addEventListener('resize', function(){ applyCompactState(document); });
+    var container = document.querySelector('[data-product-container]');
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
-        updateQtyGroupLayout();
-        setupCollectionDoubleQtyButtons();
         mutations.forEach(function(m){
           m.addedNodes.forEach(function(node){
             if(!(node instanceof HTMLElement)) return;
@@ -738,10 +751,26 @@ async function handleDelegatedAddToCart(e){
             root.querySelectorAll && root.querySelectorAll('input.collection-qty-element[data-collection-quantity-input]').forEach(function(inp){
               if(qgIsSliderInput(inp)) qgEnforceSliderInput(inp);
             });
+
+            var actions = [];
+            if(root.matches && root.matches('.collection-form__actions')) actions.push(root);
+            if(root.querySelectorAll){
+              root.querySelectorAll('.collection-form__actions').forEach(function(a){ actions.push(a); });
+            }
+            actions.forEach(applyCompactState);
           });
         });
+        setupCollectionDoubleQtyButtons();
       });
       observer.observe(container, { childList:true, subtree:true });
+    }
+    if(window.ConceptSGMEvents && typeof window.ConceptSGMEvents.subscribe === 'function'){
+      window.ConceptSGMEvents.subscribe('ON_PRODUCT_LIST_UPDATED', function(){
+        var cont = document.querySelector('[data-product-container]');
+        if(cont){
+          cont.querySelectorAll('.collection-form__actions').forEach(applyCompactState);
+        }
+      });
     }
   }
   document.addEventListener('input', handleQtyInputEvent, true);
