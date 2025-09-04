@@ -703,46 +703,84 @@ async function handleDelegatedAddToCart(e){
     var btn = e.target.closest('.collection-double-qty-btn');
     if(btn) btn.classList.remove('focus');
   }
-  function updateQtyGroupLayout(){
-    document.querySelectorAll('.collection-qty-group').forEach(function(group){
-      var input = group.querySelector('input[data-collection-quantity-input]');
-      var btn = group.querySelector('.collection-double-qty-btn');
-      var actions = group.closest('.collection-form__actions');
-      if(!input || !btn){
-        if(actions) actions.classList.remove('add-to-cart--compact');
+  var supportsHas = CSS && CSS.supports && CSS.supports('selector(:has(*))');
+  var qtyLayoutListenerBound = false;
+  var qtyResizeObserver = null;
+  function applyCompactState(root){
+    (root || document).querySelectorAll('.collection-form__actions').forEach(function(actions){
+      var group = actions.querySelector('.collection-qty-group');
+      var input = group && group.querySelector('input[data-collection-quantity-input]');
+      var btn = group && group.querySelector('.collection-double-qty-btn');
+      if(!group || !input || !btn){
+        if(group) group.classList.remove('is-wrapped');
+        if(!supportsHas && actions) actions.classList.remove('add-to-cart--compact');
         return;
       }
       var wrapped = btn.offsetTop > input.offsetTop;
       group.classList.toggle('is-wrapped', wrapped);
-      if(actions) actions.classList.toggle('add-to-cart--compact', !wrapped);
+      if(!supportsHas && actions) actions.classList.toggle('add-to-cart--compact', !wrapped);
+      if(qtyResizeObserver){ qtyResizeObserver.observe(group); }
     });
   }
-  var qtyLayoutListenerBound = false;
+  window.applyCompactState = applyCompactState;
   function watchQtyGroupLayout(){
-    updateQtyGroupLayout();
+    applyCompactState();
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
-    window.addEventListener('resize', updateQtyGroupLayout);
+    var resizeRAF;
+    window.addEventListener('resize', function(){
+      if(resizeRAF) cancelAnimationFrame(resizeRAF);
+      resizeRAF = requestAnimationFrame(applyCompactState);
+    });
+    window.addEventListener('load', applyCompactState);
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(applyCompactState).catch(function(){});
+    }
+    if(window.ResizeObserver){
+      qtyResizeObserver = new ResizeObserver(function(){ applyCompactState(); });
+      document.querySelectorAll('.collection-form__actions .collection-qty-group').forEach(function(g){
+        qtyResizeObserver.observe(g);
+      });
+    }
     var container = document.querySelector('.sf-collection-list, .collection-listing');
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
-        updateQtyGroupLayout();
+        applyCompactState();
         setupCollectionDoubleQtyButtons();
         mutations.forEach(function(m){
           m.addedNodes.forEach(function(node){
             if(!(node instanceof HTMLElement)) return;
-            var root = node;
-            if(root.matches && root.matches('input.collection-qty-element[data-collection-quantity-input]')){
-              if(qgIsSliderInput(root)) qgEnforceSliderInput(root);
+            if(qtyResizeObserver){
+              if(node.matches && node.matches('.collection-form__actions .collection-qty-group')){
+                qtyResizeObserver.observe(node);
+              }
+              node.querySelectorAll && node.querySelectorAll('.collection-form__actions .collection-qty-group').forEach(function(g){
+                qtyResizeObserver.observe(g);
+              });
             }
-            root.querySelectorAll && root.querySelectorAll('input.collection-qty-element[data-collection-quantity-input]').forEach(function(inp){
+            if(node.matches && node.matches('input.collection-qty-element[data-collection-quantity-input]')){
+              if(qgIsSliderInput(node)) qgEnforceSliderInput(node);
+            }
+            node.querySelectorAll && node.querySelectorAll('input.collection-qty-element[data-collection-quantity-input]').forEach(function(inp){
               if(qgIsSliderInput(inp)) qgEnforceSliderInput(inp);
+            });
+            node.querySelectorAll && node.querySelectorAll('img').forEach(function(img){
+              if(!img.complete){
+                img.addEventListener('load', applyCompactState, {once:true});
+                img.addEventListener('error', applyCompactState, {once:true});
+              }
             });
           });
         });
       });
       observer.observe(container, { childList:true, subtree:true });
     }
+    document.querySelectorAll('.sf-collection-list img, .collection-listing img').forEach(function(img){
+      if(!img.complete){
+        img.addEventListener('load', applyCompactState, {once:true});
+        img.addEventListener('error', applyCompactState, {once:true});
+      }
+    });
   }
   document.addEventListener('input', handleQtyInputEvent, true);
   document.addEventListener('change', handleQtyInputEvent, true);
