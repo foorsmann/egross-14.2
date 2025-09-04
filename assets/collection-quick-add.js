@@ -734,7 +734,7 @@ async function handleDelegatedAddToCart(e){
   var qtyLayoutListenerBound = false;
   function watchQtyGroupLayout(){
     updateQtyGroupLayout();
-    var container = document.querySelector('.sf-collection-list, .collection-listing');
+    var container = document.querySelector('[data-product-container]') || document.querySelector('.sf-collection-list, .collection-listing');
     if(container) bindQtyGroupImages(container);
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
@@ -743,6 +743,14 @@ async function handleDelegatedAddToCart(e){
     if(document.fonts){
       document.fonts.ready && document.fonts.ready.then(updateQtyGroupLayout).catch(function(){});
       document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', updateQtyGroupLayout);
+    }
+    if(window.ConceptSGMEvents && typeof window.ConceptSGMEvents.subscribe === 'function'){
+      window.ConceptSGMEvents.subscribe('ON_PRODUCT_LIST_UPDATED', function(){
+        updateQtyGroupLayout();
+        setupCollectionDoubleQtyButtons();
+        var container = document.querySelector('[data-product-container]') || document.querySelector('.sf-collection-list, .collection-listing');
+        if(container) bindQtyGroupImages(container);
+      });
     }
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
