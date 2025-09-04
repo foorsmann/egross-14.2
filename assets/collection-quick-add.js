@@ -4,6 +4,7 @@
  */
 (function(){
   var addToCartLocks = new WeakSet();
+  var supportsHasSelector = typeof CSS !== 'undefined' && CSS.supports && CSS.supports('selector(:has(*))');
   function snapDown(val, step, min){
     if(!isFinite(val)) return min;
     if(val < min) return min;
@@ -713,12 +714,18 @@ async function handleDelegatedAddToCart(e){
       var btn = group.querySelector('.collection-double-qty-btn');
       var actions = group.closest('.collection-form__actions');
       if(!input || !btn){
-        if(actions) actions.classList.remove('add-to-cart--compact');
+        if(actions && !supportsHasSelector) actions.classList.remove('add-to-cart--compact');
         return;
       }
       var wrapped = btn.offsetTop > input.offsetTop;
       group.classList.toggle('is-wrapped', wrapped);
-      if(actions) actions.classList.toggle('add-to-cart--compact', !wrapped);
+      if(actions){
+        if(supportsHasSelector){
+          actions.classList.remove('add-to-cart--compact');
+        }else{
+          actions.classList.toggle('add-to-cart--compact', !wrapped);
+        }
+      }
     });
   }
   var qtyLayoutListenerBound = false;
