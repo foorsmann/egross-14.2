@@ -78,11 +78,17 @@ function qgSyncSliderQtyUI(qtyEl, sendQty) {
   var card = qtyEl.closest('.sf__pcard, .p-card, .product-card, .sf__col-item, [data-product-id], .swiper-slide, [data-section-type]');
   var dbl  = card && (card.querySelector('[data-collection-double-qty]') || card.querySelector('.collection-double-qty-btn') || card.querySelector('.double-qty-btn'));
   if (dbl) {
-    var disabled = atMax;
+    var lowStock = max > 0 && max < step;
+    var disabled = atMax || lowStock;
     dbl.disabled = disabled;
     dbl.toggleAttribute('disabled', disabled);
     dbl.setAttribute('aria-disabled', String(disabled));
     dbl.classList.toggle('is-disabled', disabled);
+    if (lowStock) {
+      dbl.setAttribute('title', 'Stoc insuficient pentru cantitatea minimă');
+    } else {
+      dbl.removeAttribute('title');
+    }
   }
 
   // sincronizează duplicatele (dacă există utilitare)
@@ -139,15 +145,17 @@ function qgSyncSliderQtyUI(qtyEl, sendQty) {
     const card = input.closest('.sf__pcard, .p-card, .product-card, .sf__col-item, [data-product-id], .swiper-slide') || document;
     const dbl  = card.querySelector('[data-collection-double-qty], .collection-double-qty-btn, .double-qty-btn');
     if (dbl) {
-      const disabled = !(max >= step);
-      if (disabled) {
+      const lowStock = !(max >= step);
+      if (lowStock) {
         dbl.setAttribute('disabled', 'true');
         dbl.setAttribute('aria-disabled', 'true');
         dbl.classList.add('is-disabled');
+        dbl.setAttribute('title', 'Stoc insuficient pentru cantitatea minimă');
       } else {
         dbl.removeAttribute('disabled');
         dbl.removeAttribute('aria-disabled');
         dbl.classList.remove('is-disabled');
+        dbl.removeAttribute('title');
       }
     }
 
@@ -269,7 +277,9 @@ function qgSyncSliderQtyUI(qtyEl, sendQty) {
       // Allow user to clear the field while typing. Only enforce the
       // minimum quantity when the value is not empty.
       if (e.type === 'input' && input.value === '') {
+        var step = parseInt(input.getAttribute('data-collection-min-qty') || input.step || '1', 10) || 1;
         var max  = parseInt(input.getAttribute('max') || input.max || '0', 10) || 0;
+        var lowStock = isFinite(max) && max < step;
         input.classList.remove('text-red-600');
         input.style.removeProperty('color');
 
@@ -277,18 +287,23 @@ function qgSyncSliderQtyUI(qtyEl, sendQty) {
         if (wrap) {
           var plus  = wrap.querySelector('[data-collection-quantity-selector="increase"]');
           var minus = wrap.querySelector('[data-collection-quantity-selector="decrease"]');
-          if (plus)  plus.disabled  = isFinite(max) && max <= 0;
+          if (plus)  plus.disabled  = lowStock;
           if (minus) minus.disabled = true;
         }
 
         var card = input.closest('.sf__pcard, .p-card, .product-card, .sf__col-item, [data-product-id], .swiper-slide, [data-section-type]');
         var dbl  = card && (card.querySelector('[data-collection-double-qty]') || card.querySelector('.collection-double-qty-btn') || card.querySelector('.double-qty-btn'));
         if (dbl) {
-          var disabled = isFinite(max) && max <= 0;
+          var disabled = lowStock;
           dbl.disabled = disabled;
           dbl.toggleAttribute('disabled', disabled);
           dbl.setAttribute('aria-disabled', String(disabled));
           dbl.classList.toggle('is-disabled', disabled);
+          if (lowStock) {
+            dbl.setAttribute('title', 'Stoc insuficient pentru cantitatea minimă');
+          } else {
+            dbl.removeAttribute('title');
+          }
         }
         return;
       }
@@ -455,7 +470,17 @@ function qgSyncSliderQtyUI(qtyEl, sendQty) {
     btn.textContent = label;
     var max = input.max ? parseInt(input.max,10) : 9999;
     var val = parseInt(input.value,10) || 1;
-    btn.disabled = val >= max;
+    var lowStock = max > 0 && max < min;
+    var disabled = val >= max || lowStock;
+    btn.disabled = disabled;
+    btn.toggleAttribute('disabled', disabled);
+    btn.setAttribute('aria-disabled', String(disabled));
+    btn.classList.toggle('is-disabled', disabled);
+    if (lowStock) {
+      btn.setAttribute('title', 'Stoc insuficient pentru cantitatea minimă');
+    } else {
+      btn.removeAttribute('title');
+    }
   }
 
   function setupCollectionDoubleQtyButtons(){
