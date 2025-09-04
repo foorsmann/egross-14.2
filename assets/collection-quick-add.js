@@ -707,8 +707,14 @@ async function handleDelegatedAddToCart(e){
     document.querySelectorAll('.collection-qty-group').forEach(function(group){
       var input = group.querySelector('input[data-collection-quantity-input]');
       var btn = group.querySelector('.collection-double-qty-btn');
-      if(!input || !btn) return;
-      group.classList.toggle('is-wrapped', btn.offsetTop > input.offsetTop);
+      var actions = group.closest('.collection-form__actions');
+      if(!input || !btn){
+        if(actions) actions.classList.remove('add-to-cart--compact');
+        return;
+      }
+      var wrapped = btn.offsetTop > input.offsetTop;
+      group.classList.toggle('is-wrapped', wrapped);
+      if(actions) actions.classList.toggle('add-to-cart--compact', !wrapped);
     });
   }
   var qtyLayoutListenerBound = false;
