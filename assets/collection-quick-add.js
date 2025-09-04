@@ -922,3 +922,46 @@ async function handleDelegatedAddToCart(e){
   }
 })();
 
+(function() {
+  const QTY_GROUP_SEL = '[data-collection-cart-actions] .collection-qty-group';
+  const ACTIONS_SEL   = '[data-collection-cart-actions]';
+
+  function isWrapped(el) {
+    // Heuristică stabilă: dacă primul și ultimul copil au Y diferit => wrap
+    const kids = Array.from(el.children).filter(n => n.offsetParent !== null);
+    if (kids.length < 2) return false;
+    const top0 = kids[0].getBoundingClientRect().top;
+    const topN = kids[kids.length - 1].getBoundingClientRect().top;
+    return Math.abs(topN - top0) > 2; // >2px pentru zgomot layout
+  }
+
+  function updateStackStateFor(el) {
+    const actions = el.closest(ACTIONS_SEL);
+    if (!actions) return;
+    const wrapped = isWrapped(el);
+    actions.classList.toggle('is-stacked', wrapped);
+  }
+
+  function scanAll() {
+    document.querySelectorAll(QTY_GROUP_SEL).forEach(el => updateStackStateFor(el));
+  }
+
+  // Init pe DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    requestAnimationFrame(scanAll);
+    // Resize global
+    window.addEventListener('resize', () => requestAnimationFrame(scanAll), { passive: true });
+  });
+
+  // Re-scan pentru evenimente Shopify/temă frecvente
+  ['shopify:section:load', 'cart:updated', 'product:updated'].forEach(evt =>
+    document.addEventListener(evt, () => requestAnimationFrame(scanAll))
+  );
+
+  // Observă containerul pentru schimbări dinamice de dimensiuni (slidere, font-load, img)
+  try {
+    const ro = new ResizeObserver(() => requestAnimationFrame(scanAll));
+    document.querySelectorAll(ACTIONS_SEL).forEach(node => ro.observe(node));
+  } catch (e) { /* optional pe browsere vechi */ }
+})();
+
