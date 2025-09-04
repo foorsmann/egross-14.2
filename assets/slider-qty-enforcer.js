@@ -42,15 +42,17 @@
     const card = input.closest('.sf__pcard, .p-card, .product-card, .sf__col-item, [data-product-id], .swiper-slide') || document;
     const dbl  = card.querySelector('[data-collection-double-qty], .collection-double-qty-btn, .double-qty-btn');
     if (dbl){
-      const disabled = !(maxAttr >= stepAttr);
-      if (disabled){
+      const lowStock = !(maxAttr >= stepAttr);
+      if (lowStock){
         dbl.setAttribute('disabled','true');
         dbl.setAttribute('aria-disabled','true');
         dbl.classList.add('is-disabled');
+        dbl.setAttribute('title','Stoc insuficient pentru cantitatea minimă');
       } else {
         dbl.removeAttribute('disabled');
         dbl.removeAttribute('aria-disabled');
         dbl.classList.remove('is-disabled');
+        dbl.removeAttribute('title');
       }
     }
   }
