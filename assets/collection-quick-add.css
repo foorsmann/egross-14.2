@@ -83,3 +83,31 @@ input.collection-qty-element:focus {
   font-weight: 600;
 }
 
+/* Layout adjustments when qty group and "Adaugă încă" fit on one line */
+.collection-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.collection-form__actions.inline-layout .collection-qty-wrapper,
+.collection-form__actions.inline-layout .collection-qty-group {
+  width: auto;
+  flex: 0 0 auto;
+}
+
+.collection-form__actions.inline-layout .collection-qty-group .collection-quantity-input,
+.collection-form__actions.inline-layout .collection-qty-group .collection-double-qty-btn {
+  flex: 0 0 auto;
+  width: auto;
+}
+
+.collection-form__actions.inline-layout .collection-qty-group .collection-double-qty-btn {
+  max-width: 160px;
+}
+
+.collection-form__actions.inline-layout .collection-add-to-cart {
+  width: auto;
+  margin-left: auto;
+  margin-top: 0;
+}
+
