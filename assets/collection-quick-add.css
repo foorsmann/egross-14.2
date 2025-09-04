@@ -77,6 +77,28 @@ input.collection-qty-element:focus {
   height: 46px;
 }
 
+/* Layout switching for Add to Cart based on quantity wrap */
+.collection-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.collection-form__actions .collection-qty-wrapper {
+  flex: 1 1 100%;
+}
+
+.collection-form__actions:not(.is-qty-wrapped) .collection-qty-wrapper {
+  flex: 1 1 auto;
+  width: auto;
+}
+
+.collection-form__actions:not(.is-qty-wrapped) .collection-add-to-cart {
+  width: auto;
+  margin-left: auto;
+  flex-grow: 0;
+}
+
 /* fallback discret pentru low-stock în slidere */
 [data-section-type] input.collection-qty-element.is-low-stock {
   color: #e3342f !important;

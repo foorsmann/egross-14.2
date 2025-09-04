@@ -708,7 +708,12 @@ async function handleDelegatedAddToCart(e){
       var input = group.querySelector('input[data-collection-quantity-input]');
       var btn = group.querySelector('.collection-double-qty-btn');
       if(!input || !btn) return;
-      group.classList.toggle('is-wrapped', btn.offsetTop > input.offsetTop);
+      var wrapped = btn.offsetTop > input.offsetTop;
+      group.classList.toggle('is-wrapped', wrapped);
+      var actions = group.closest('.collection-form__actions');
+      if(actions){
+        actions.classList.toggle('is-qty-wrapped', wrapped);
+      }
     });
   }
   var qtyLayoutListenerBound = false;
