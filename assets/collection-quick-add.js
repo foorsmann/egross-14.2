@@ -704,7 +704,7 @@ async function handleDelegatedAddToCart(e){
     if(btn) btn.classList.remove('focus');
   }
   function updateQtyGroupLayout(){
-    document.querySelectorAll('.collection-qty-group').forEach(function(group){
+    document.querySelectorAll('.collection-form__actions .collection-qty-group').forEach(function(group){
       var input = group.querySelector('input[data-collection-quantity-input]');
       var btn = group.querySelector('.collection-double-qty-btn');
       var actions = group.closest('.collection-form__actions');
@@ -718,11 +718,26 @@ async function handleDelegatedAddToCart(e){
     });
   }
   var qtyLayoutListenerBound = false;
+  var qtyGroupResizeObserver;
   function watchQtyGroupLayout(){
     updateQtyGroupLayout();
+    window.addEventListener('load', updateQtyGroupLayout);
+    if(document.fonts){
+      if(document.fonts.addEventListener){
+        document.fonts.addEventListener('loadingdone', updateQtyGroupLayout);
+      }else if(document.fonts.ready){
+        document.fonts.ready.then(updateQtyGroupLayout);
+      }
+    }
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
     window.addEventListener('resize', updateQtyGroupLayout);
+    if(window.ResizeObserver){
+      qtyGroupResizeObserver = new ResizeObserver(updateQtyGroupLayout);
+      document.querySelectorAll('.collection-form__actions .collection-qty-group').forEach(function(group){
+        qtyGroupResizeObserver.observe(group);
+      });
+    }
     var container = document.querySelector('.sf-collection-list, .collection-listing');
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
@@ -738,6 +753,14 @@ async function handleDelegatedAddToCart(e){
             root.querySelectorAll && root.querySelectorAll('input.collection-qty-element[data-collection-quantity-input]').forEach(function(inp){
               if(qgIsSliderInput(inp)) qgEnforceSliderInput(inp);
             });
+            if(qtyGroupResizeObserver){
+              if(root.matches && root.matches('.collection-form__actions .collection-qty-group')){
+                qtyGroupResizeObserver.observe(root);
+              }
+              root.querySelectorAll && root.querySelectorAll('.collection-form__actions .collection-qty-group').forEach(function(group){
+                qtyGroupResizeObserver.observe(group);
+              });
+            }
           });
         });
       });
