@@ -77,7 +77,7 @@
 
           <div class="flex flex-wrap items-end{% unless has_double_qty_btn %} gap-2{% endunless %}">
             {% if show_quantity_selector == true %}
-              <div class="form__input-wrapper form__input-wrapper--select{% if has_double_qty_btn %} mr-5 w-32{% else %} flex-1{% endif %}" data-quantity-input-wrapper>
+              <div class="form__input-wrapper form__input-wrapper--select{% if has_double_qty_btn %} mr-5{% else %} flex-1{% endif %}" data-quantity-input-wrapper>
                 {% render 'product-qty-input', product_form_id: product_form_id, show_double_qty_btn: show_double_qty_btn %}
               </div>
             {% endif %}

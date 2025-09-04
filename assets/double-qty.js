@@ -390,6 +390,35 @@ var BUTTON_CLASS = 'double-qty-btn';
       if(btn) btn.classList.remove('focus');
     }
 
+    function updateProductQtyLayout(){
+      document.querySelectorAll('.product-qty-group').forEach(function(group){
+        var input = group.querySelector('input[data-quantity-input]');
+        var btn = group.querySelector('.double-qty-btn');
+        var cart = group.closest('[data-cart-actions]');
+        var atc = cart && cart.querySelector('.add-to-cart');
+        if(!input || !btn || !atc) return;
+        var wrapped = btn.offsetTop > input.offsetTop;
+        group.classList.toggle('is-wrapped', wrapped);
+        if(wrapped){
+          atc.classList.add('w-full','mt-4');
+          atc.classList.remove('ml-auto');
+          atc.style.flexGrow = '1';
+        }else{
+          atc.classList.remove('w-full','mt-4');
+          atc.classList.add('ml-auto');
+          atc.style.flexGrow = '0';
+        }
+      });
+    }
+
+    var qtyLayoutBound = false;
+    function watchProductQtyLayout(){
+      updateProductQtyLayout();
+      if(qtyLayoutBound) return;
+      qtyLayoutBound = true;
+      window.addEventListener('resize', updateProductQtyLayout);
+    }
+
     document.addEventListener('input', handleQtyInputEvent, true);
     document.addEventListener('change', handleQtyInputEvent, true);
     document.addEventListener('blur', handleQtyInputEvent, true);
@@ -402,6 +431,7 @@ var BUTTON_CLASS = 'double-qty-btn';
       applyMinQty();
       setupDoubleQtyButtons();
       attachQtyButtonListeners();
+      watchProductQtyLayout();
     }
     document.addEventListener('DOMContentLoaded', initAll);
     window.addEventListener('shopify:section:load', initAll);

@@ -44,3 +44,26 @@
   }
 }
 
+/* Layout tweaks for product page quantity group */
+.product-qty-group {
+  flex-wrap: wrap;
+}
+.product-qty-group .quantity-input {
+  flex: 0 0 auto;
+  width: auto;
+}
+.product-qty-group .double-qty-btn {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 160px;
+}
+.product-qty-group.is-wrapped .quantity-input,
+.product-qty-group.is-wrapped .double-qty-btn {
+  flex: 1 1 100%;
+  width: 100%;
+}
+.product-qty-group.is-wrapped .double-qty-btn {
+  max-width: none;
+  height: 46px;
+}
+
