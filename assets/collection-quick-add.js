@@ -703,12 +703,22 @@ async function handleDelegatedAddToCart(e){
     var btn = e.target.closest('.collection-double-qty-btn');
     if(btn) btn.classList.remove('focus');
   }
+  function syncActionsStackState(qtyGroupEl) {
+    try {
+      var actions = qtyGroupEl.closest('[data-collection-cart-actions]');
+      if (!actions) return;
+      var wrapped = qtyGroupEl.classList.contains('is-wrapped');
+      actions.classList.toggle('is-stacked', wrapped);
+    } catch (e) { /* noop */ }
+  }
   function updateQtyGroupLayout(){
     document.querySelectorAll('.collection-qty-group').forEach(function(group){
       var input = group.querySelector('input[data-collection-quantity-input]');
       var btn = group.querySelector('.collection-double-qty-btn');
       if(!input || !btn) return;
-      group.classList.toggle('is-wrapped', btn.offsetTop > input.offsetTop);
+      var wrapped = btn.offsetTop > input.offsetTop;
+      group.classList.toggle('is-wrapped', wrapped);
+      syncActionsStackState(group);
     });
   }
   var qtyLayoutListenerBound = false;

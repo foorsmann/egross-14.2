@@ -83,3 +83,35 @@ input.collection-qty-element:focus {
   font-weight: 600;
 }
 
+/* === ATC inline (colecții) — aliniere dreapta + width:auto === */
+[data-collection-cart-actions] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem; /* păstrează un mic spațiu între grupuri */
+}
+
+/* Qty wrapper ia spațiul disponibil; ATC stă la dreapta */
+[data-collection-cart-actions] .collection-qty-wrapper {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Impunem ATC inline spre dreapta, width:auto; anulăm w-full din markup */
+[data-collection-cart-actions] .collection-add-to-cart {
+  width: auto !important;
+  margin-left: auto;           /* „lipit” la dreapta */
+  margin-top: 0 !important;    /* anulăm .mt-4 când suntem inline */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* asigură comportament previzibil la îngustare */
+  min-width: max(140px, fit-content);
+}
+
+/* === Mod „stacked” când qty+double-qty se rup pe 2 rânduri === */
+[data-collection-cart-actions].is-stacked .collection-add-to-cart {
+  width: 100% !important;
+  margin-left: 0;
+  margin-top: 0.75rem !important; /* simulăm ușor spațiul de deasupra, ca vechiul mt-4 */
+}
