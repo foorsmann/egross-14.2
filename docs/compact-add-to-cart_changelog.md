@@ -1,4 +1,4 @@
 # Compact Add to Cart – Changelog
 
-- Updated `assets/collection-quick-add.js` with `applyCompactState` and observers so compact styling persists after resize and lazy-loaded products.
-- Added progressive `:has()` rule in `assets/collection-quick-add.css` to reduce initial flash and ensure compact styling when quantity controls stay on one line.
+- Removed grid `MutationObserver` and `:has()` CSS rule to avoid layout thrashing and skeleton stalls.
+- Added idempotent `applyCompactState` using per-card `ResizeObserver`, debounced resize handler, and `ON_PRODUCT_LIST_UPDATED` hook for lazy-loaded products.

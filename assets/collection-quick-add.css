@@ -91,10 +91,3 @@ input.collection-qty-element:focus {
   flex-grow: 0;
 }
 
-.collection-form__actions:has(.collection-qty-group:not(.is-wrapped) .collection-double-qty-btn) .collection-add-to-cart {
-  display: block;
-  width: auto;
-  margin-left: auto;
-  flex-grow: 0;
-}
-
