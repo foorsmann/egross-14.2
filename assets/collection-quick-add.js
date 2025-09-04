@@ -723,6 +723,12 @@ async function handleDelegatedAddToCart(e){
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
     window.addEventListener('resize', updateQtyGroupLayout);
+    window.addEventListener('load', updateQtyGroupLayout);
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(function(){
+        updateQtyGroupLayout();
+      }).catch(function(){});
+    }
     var container = document.querySelector('.sf-collection-list, .collection-listing');
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
@@ -742,6 +748,7 @@ async function handleDelegatedAddToCart(e){
         });
       });
       observer.observe(container, { childList:true, subtree:true });
+      container.addEventListener('load', updateQtyGroupLayout, true);
     }
   }
   document.addEventListener('input', handleQtyInputEvent, true);
