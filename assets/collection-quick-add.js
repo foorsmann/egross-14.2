@@ -705,16 +705,22 @@ async function handleDelegatedAddToCart(e){
   }
   function updateQtyGroupLayout(){
     document.querySelectorAll('.collection-qty-group').forEach(function(group){
+      var actions = group.closest('.collection-form__actions');
+      if(!actions) return;
+      var listing = actions.closest('.sf-collection-list, .collection-listing');
+      if(!listing){
+        actions.classList.remove('add-to-cart--compact');
+        return;
+      }
       var input = group.querySelector('input[data-collection-quantity-input]');
       var btn = group.querySelector('.collection-double-qty-btn');
-      var actions = group.closest('.collection-form__actions');
       if(!input || !btn){
-        if(actions) actions.classList.remove('add-to-cart--compact');
+        actions.classList.remove('add-to-cart--compact');
         return;
       }
       var wrapped = btn.offsetTop > input.offsetTop;
       group.classList.toggle('is-wrapped', wrapped);
-      if(actions) actions.classList.toggle('add-to-cart--compact', !wrapped);
+      actions.classList.toggle('add-to-cart--compact', !wrapped);
     });
   }
   var qtyLayoutListenerBound = false;
@@ -729,8 +735,7 @@ async function handleDelegatedAddToCart(e){
         updateQtyGroupLayout();
       }).catch(function(){});
     }
-    var container = document.querySelector('.sf-collection-list, .collection-listing');
-    if(container && window.MutationObserver){
+    if(window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
         updateQtyGroupLayout();
         setupCollectionDoubleQtyButtons();
@@ -747,8 +752,8 @@ async function handleDelegatedAddToCart(e){
           });
         });
       });
-      observer.observe(container, { childList:true, subtree:true });
-      container.addEventListener('load', updateQtyGroupLayout, true);
+      observer.observe(document.body, { childList:true, subtree:true });
+      document.body.addEventListener('load', updateQtyGroupLayout, true);
     }
   }
   document.addEventListener('input', handleQtyInputEvent, true);
