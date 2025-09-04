@@ -704,17 +704,20 @@ async function handleDelegatedAddToCart(e){
     if(btn) btn.classList.remove('focus');
   }
   function updateQtyGroupLayout(){
-    document.querySelectorAll('.collection-qty-group').forEach(function(group){
+    var root = document.querySelector('.sf-collection-list, .collection-listing');
+    if(!root) return;
+    root.querySelectorAll('.collection-form__actions').forEach(function(actions){
+      var group = actions.querySelector('.collection-qty-group');
+      if(!group) return;
       var input = group.querySelector('input[data-collection-quantity-input]');
       var btn = group.querySelector('.collection-double-qty-btn');
-      var actions = group.closest('.collection-form__actions');
       if(!input || !btn){
-        if(actions) actions.classList.remove('add-to-cart--compact');
+        actions.classList.remove('add-to-cart--compact');
         return;
       }
       var wrapped = btn.offsetTop > input.offsetTop;
       group.classList.toggle('is-wrapped', wrapped);
-      if(actions) actions.classList.toggle('add-to-cart--compact', !wrapped);
+      actions.classList.toggle('add-to-cart--compact', !wrapped);
     });
   }
   var qtyLayoutListenerBound = false;
@@ -723,6 +726,11 @@ async function handleDelegatedAddToCart(e){
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
     window.addEventListener('resize', updateQtyGroupLayout);
+    window.addEventListener('load', updateQtyGroupLayout);
+    if(document.fonts){
+      document.fonts.ready.then(updateQtyGroupLayout);
+      document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', updateQtyGroupLayout);
+    }
     var container = document.querySelector('.sf-collection-list, .collection-listing');
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
@@ -737,6 +745,14 @@ async function handleDelegatedAddToCart(e){
             }
             root.querySelectorAll && root.querySelectorAll('input.collection-qty-element[data-collection-quantity-input]').forEach(function(inp){
               if(qgIsSliderInput(inp)) qgEnforceSliderInput(inp);
+            });
+            if(root.matches && root.matches('img')){
+              if(root.complete) updateQtyGroupLayout();
+              else root.addEventListener('load', updateQtyGroupLayout, {once:true});
+            }
+            root.querySelectorAll && root.querySelectorAll('img').forEach(function(img){
+              if(img.complete) updateQtyGroupLayout();
+              else img.addEventListener('load', updateQtyGroupLayout, {once:true});
             });
           });
         });
