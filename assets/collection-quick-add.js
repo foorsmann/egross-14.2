@@ -4,6 +4,17 @@
  */
 (function(){
   var addToCartLocks = new WeakSet();
+  var qgFirstPaintDone = false;
+  function qgMarkListingReady(){
+    if(qgFirstPaintDone) return;
+    var listing = document.querySelector('.sf__product-listing[data-product-container]');
+    if(listing){
+      listing.setAttribute('data-qg-ready','1');
+    }
+    // Fallback global (dacă nu există containerul dintr-un motiv sau altul)
+    try { document.documentElement.removeAttribute('data-qg'); } catch(e){}
+    qgFirstPaintDone = true;
+  }
   function snapDown(val, step, min){
     if(!isFinite(val)) return min;
     if(val < min) return min;
@@ -725,9 +736,14 @@ async function handleDelegatedAddToCart(e){
   var qtyResizeObserver = window.ResizeObserver ? new ResizeObserver(updateQtyGroupLayout) : null;
   function watchQtyGroupLayout(){
     updateQtyGroupLayout();
+    qgMarkListingReady(); // <- marchează containerul ca ready imediat după prima măsurare
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
     window.addEventListener('resize', updateQtyGroupLayout);
+    window.addEventListener('load', function(){ updateQtyGroupLayout(); qgMarkListingReady(); });
+    if(document.fonts && document.fonts.ready){
+      document.fonts.ready.then(function(){ updateQtyGroupLayout(); qgMarkListingReady(); });
+    }
     var container = document.querySelector('[data-product-container]');
     if(container && qtyResizeObserver){
       container.querySelectorAll('.collection-qty-group').forEach(function(group){
@@ -737,6 +753,7 @@ async function handleDelegatedAddToCart(e){
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
         updateQtyGroupLayout();
+        qgMarkListingReady(); // în caz că primul paint se întâmplă după primul append
         mutations.forEach(function(m){
           m.addedNodes.forEach(function(node){
             if(!(node instanceof HTMLElement)) return;
@@ -779,6 +796,9 @@ async function handleDelegatedAddToCart(e){
     attachQtyButtonListeners();
     attachNoHighlightListeners();
     watchQtyGroupLayout();
+    // Dacă initAll rulează din alte evenimente (ex. shopify:section:load),
+    // asigură-te că marcăm ready după prima măsurare:
+    qgMarkListingReady();
   }
   document.addEventListener('DOMContentLoaded', initAll);
   window.addEventListener('shopify:section:load', initAll);
