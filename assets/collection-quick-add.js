@@ -717,13 +717,33 @@ async function handleDelegatedAddToCart(e){
       if(actions) actions.classList.toggle('add-to-cart--compact', !wrapped);
     });
   }
+  function bindQtyGroupImages(root){
+    if(!root) return;
+    var imgs = [];
+    if(root.matches && root.matches('img')) imgs.push(root);
+    if(root.querySelectorAll){
+      root.querySelectorAll('img').forEach(function(img){ imgs.push(img); });
+    }
+    imgs.forEach(function(img){
+      if(img.__qtyImgBound) return;
+      img.__qtyImgBound = true;
+      img.addEventListener('load', updateQtyGroupLayout);
+      img.addEventListener('error', updateQtyGroupLayout);
+    });
+  }
   var qtyLayoutListenerBound = false;
   function watchQtyGroupLayout(){
     updateQtyGroupLayout();
+    var container = document.querySelector('.sf-collection-list, .collection-listing');
+    if(container) bindQtyGroupImages(container);
     if(qtyLayoutListenerBound) return;
     qtyLayoutListenerBound = true;
     window.addEventListener('resize', updateQtyGroupLayout);
-    var container = document.querySelector('.sf-collection-list, .collection-listing');
+    window.addEventListener('load', updateQtyGroupLayout);
+    if(document.fonts){
+      document.fonts.ready && document.fonts.ready.then(updateQtyGroupLayout).catch(function(){});
+      document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', updateQtyGroupLayout);
+    }
     if(container && window.MutationObserver){
       var observer = new MutationObserver(function(mutations){
         updateQtyGroupLayout();
@@ -738,6 +758,7 @@ async function handleDelegatedAddToCart(e){
             root.querySelectorAll && root.querySelectorAll('input.collection-qty-element[data-collection-quantity-input]').forEach(function(inp){
               if(qgIsSliderInput(inp)) qgEnforceSliderInput(inp);
             });
+            bindQtyGroupImages(root);
           });
         });
       });
